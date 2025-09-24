@@ -3,29 +3,46 @@ import axios from "axios";
 
 
 
-const CryptoTable = () => {
+const CryptoTable = ({ onSelectCrypto }) => {
   const [cryptos, setCryptos] = useState([]);
-  const [symbols, setSymbols] = useState("BTC,ETH");
-
+    const [search, setSearch] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/cryptos?symbols=${symbols}`);
-        const data = res.data;
-        setCryptos(Object.values(data));
+        const res = await axios.get("http://localhost:3001/api/cryptos?limit=100");
+        setCryptos(res.data);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 30000); 
+    const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
-  }, [symbols]);
+  }, []);
+
+   const filteredCryptos = cryptos.filter(
+    (c) =>
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.symbol.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="crypto-table">
       <h2>Criptomonedas</h2>
+      <input
+        className="form-control"
+        type="text"
+        placeholder="Buscar por nombre o símbolo..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          marginBottom: "10px",
+          padding: "8px",
+          width: "100%",
+          maxWidth: "300px",
+        }}
+      />
       <table border="1" cellPadding="10">
         <thead>
           <tr>
@@ -37,19 +54,31 @@ const CryptoTable = () => {
           </tr>
         </thead>
         <tbody>
-          {cryptos.map((c) => (
-            <tr key={c.id}>
-              <td>{c.name}</td>
-              <td>{c.symbol}</td>
-              <td>${c.quote.USD.price.toFixed(2)}</td>
-              <td
-                style={{ color: c.quote.USD.percent_change_24h > 0 ? "green" : "red" }}
+          {filteredCryptos.length > 0 ? (
+            filteredCryptos.map((c) => (
+              <tr
+                key={c.id}
+                onClick={() => onSelectCrypto(c.symbol)}
+                style={{ cursor: "pointer" }}
               >
-                {c.quote.USD.percent_change_24h.toFixed(2)}%
-              </td>
-              <td>{c.quote.USD.volume_24h.toFixed(0)}</td>
+                <td>{c.name}</td>
+                <td>{c.symbol}</td>
+                <td>${c.quote.USD.price.toFixed(2)}</td>
+                <td
+                  style={{
+                    color: c.quote.USD.percent_change_24h > 0 ? "green" : "red",
+                  }}
+                >
+                  {c.quote.USD.percent_change_24h.toFixed(2)}%
+                </td>
+                <td>{c.quote.USD.volume_24h.toFixed(0)}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5">No se encontraron monedas</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

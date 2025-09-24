@@ -22,7 +22,7 @@ const CryptoChart = ({ symbol }) => {
 
   return (
     <div>
-      <h2>📈 Histórico {symbol}</h2>
+      <h2>Histórico {symbol}</h2>
       <LineChart width={600} height={300} data={history}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="created_at" />
