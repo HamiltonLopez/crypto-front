@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend , ResponsiveContainer} from "recharts";
+import "../styles/CryptoChart.css";
 
 const CryptoChart = ({ symbol }) => {
   const [history, setHistory] = useState([]);
@@ -21,16 +22,18 @@ const CryptoChart = ({ symbol }) => {
   }, [symbol]);
 
   return (
-    <div>
-      <h2>Histórico {symbol}</h2>
-      <LineChart width={600} height={300} data={history}>
+    <div className="crypto-chart" style={{ width: "100%", height: 700 }}>
+      <h2 className="text-center">HISTÓRICO {symbol}</h2>
+       <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={history}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="created_at" />
         <YAxis />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="price" stroke="#8884d8" />
+        <Line type="monotone" dataKey="price" stroke="#3E1E68" />
       </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 };

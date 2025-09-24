@@ -1,0 +1,13 @@
+.crypto-table input{
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.crypto-table h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+}
